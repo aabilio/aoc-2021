@@ -14,6 +14,13 @@ export function part2(input: string[]): number {
   return submarine.x * submarine.y;
 }
 
+function commandsFromInputsLines(input: string[]): ICommand[] {
+  return input.map((line) => ({
+    direction: line.split(" ")[0] as CommandDirection,
+    distance: parseInt(line.split(" ")[1]),
+  }));
+}
+
 type CommandDirection = "forward" | "down" | "up";
 
 interface ICommand {
@@ -29,13 +36,6 @@ interface ISubmarine {
 
 interface IAdvancedSubmarine extends ISubmarine {
   aim: number;
-}
-
-function commandsFromInputsLines(input: string[]): ICommand[] {
-  return input.map((line) => ({
-    direction: line.split(" ")[0] as CommandDirection,
-    distance: parseInt(line.split(" ")[1]),
-  }));
 }
 
 abstract class AbstractSubamarine implements ISubmarine {
