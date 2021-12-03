@@ -1,4 +1,12 @@
 export function part1(input: number[]): number {
+  return calculateIncrements(input);
+}
+
+export function part2(input: number[]): number {
+  return 5;
+}
+
+function calculateIncrements(input: number[]): number {
   const valueBiggerThanMaxInputValue: number = Math.max(...input) + 1;
   const initialAccumulator: { increments: number; lastValue: number } = {
     increments: 0,
@@ -11,8 +19,4 @@ export function part1(input: number[]): number {
     }),
     initialAccumulator
   ).increments;
-}
-
-export function part2(input: number[]): number {
-  return 5;
 }
