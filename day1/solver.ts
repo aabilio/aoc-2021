@@ -6,13 +6,13 @@ export function part2(input: number[]): number {
   return 5;
 }
 
-function calculateIncrements(input: number[]): number {
-  const valueBiggerThanMaxInputValue: number = Math.max(...input) + 1;
+function calculateIncrements(numbers: number[]): number {
+  const valueBiggerThanMaxInputValue: number = Math.max(...numbers) + 1;
   const initialAccumulator: { increments: number; lastValue: number } = {
     increments: 0,
     lastValue: valueBiggerThanMaxInputValue,
   };
-  return input.reduce(
+  return numbers.reduce(
     (acc, value: number) => ({
       increments: value > acc.lastValue ? acc.increments + 1 : acc.increments,
       lastValue: value,
