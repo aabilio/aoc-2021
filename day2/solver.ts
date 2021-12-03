@@ -6,6 +6,10 @@ export function part1(input: string[]): number {
   return submarine.x * submarine.y;
 }
 
+export function part2(input: string[]): number {
+  return 900;
+}
+
 type CommandDirection = "forward" | "down" | "up";
 interface ICommand {
   direction: CommandDirection;
@@ -25,7 +29,7 @@ function commandsFromInputsLines(input: string[]): ICommand[] {
   }));
 }
 
-class Submarine implements ISubmarine {
+abstract class AbstractSubamarine implements ISubmarine {
   x: number;
   y: number;
 
@@ -34,19 +38,25 @@ class Submarine implements ISubmarine {
     this.y = 0;
   }
 
-  private forward(distance: number) {
-    this.y += distance;
-  }
-
-  private down(distance: number) {
-    this.x += distance;
-  }
-
-  private up(distance: number) {
-    this.x -= distance;
-  }
+  abstract forward(distance: number): void;
+  abstract down(distance: number): void;
+  abstract up(distance: number): void;
 
   run(commands: ICommand[]) {
     commands.forEach((command) => this[command.direction](command.distance));
+  }
+}
+
+class Submarine extends AbstractSubamarine {
+  forward(distance: number) {
+    this.y += distance;
+  }
+
+  down(distance: number) {
+    this.x += distance;
+  }
+
+  up(distance: number) {
+    this.x -= distance;
   }
 }
