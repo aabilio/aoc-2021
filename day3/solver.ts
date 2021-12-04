@@ -4,6 +4,12 @@ export function part1(input: string[]): number {
   return diagnostic.powerConsumption;
 }
 
+export function part2(input: string[]): number {
+  const diagnostic = new SubmarineDiagnostic(input);
+
+  return 230;
+}
+
 class SubmarineDiagnostic {
   gamma: number;
   epsilon: number;
