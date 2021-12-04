@@ -12,14 +12,14 @@ class SubmarineDiagnostic {
     this.gamma = 0;
     this.epsilon = 0;
 
-    this.processReport(input);
+    this.executeDiagnose(input);
   }
 
   get powerConsumption(): number {
     return this.gamma * this.epsilon;
   }
 
-  private processReport(input: string[]) {
+  private executeDiagnose(input: string[]) {
     const matrix: number[][] = this.linesToMatrix(input);
     const matrixTransposed: number[][] = this.transpose(matrix);
     const binaryGamma = matrixTransposed.map(this.mostRepeated);
