@@ -12,17 +12,21 @@ class SubmarineDiagnostic {
     this.gamma = 0;
     this.epsilon = 0;
 
-    this.executeDiagnose(input);
+    const data: number[][] = this.processReport(input);
+    this.executeDiagnose(data);
   }
 
   get powerConsumption(): number {
     return this.gamma * this.epsilon;
   }
 
-  private executeDiagnose(input: string[]) {
+  private processReport(input: string[]): number[][] {
     const matrix: number[][] = this.linesToMatrix(input);
-    const matrixTransposed: number[][] = this.transpose(matrix);
-    const binaryGamma = matrixTransposed.map(this.mostRepeated);
+    return this.transpose(matrix);
+  }
+
+  private executeDiagnose(data: number[][]) {
+    const binaryGamma = data.map(this.mostRepeated);
     this.gamma = this.arrayBitsToDec(binaryGamma);
     this.epsilon = this.arrayBitsToDec(this.invertBits(binaryGamma));
   }
