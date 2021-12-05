@@ -7,32 +7,34 @@ export function part1(input: string[]): number {
 export function part2(input: string[]): number {
   const diagnostic = new SubmarineDiagnostic(input);
 
-  return 230;
+  return diagnostic.lifeSupportRating;
 }
 
 class SubmarineDiagnostic {
+  private data: number[][];
+
   gamma: number;
   epsilon: number;
 
   constructor(input: string[]) {
     this.gamma = 0;
     this.epsilon = 0;
+    this.data = this.linesToMatrix(input);
 
-    const data: number[][] = this.processReport(input);
-    this.executeDiagnose(data);
+    this.executePowerConsumptionDiagnose(this.data);
   }
 
   get powerConsumption(): number {
     return this.gamma * this.epsilon;
   }
 
-  private processReport(input: string[]): number[][] {
-    const matrix: number[][] = this.linesToMatrix(input);
-    return this.transpose(matrix);
+  get lifeSupportRating(): number {
+    const lifeSupportRatingDiagnose = new LifeSupportRatingDiagnose();
+    return lifeSupportRatingDiagnose.execute(this.data);
   }
 
-  private executeDiagnose(data: number[][]) {
-    const binaryGamma = data.map(this.mostRepeated);
+  private executePowerConsumptionDiagnose(data: number[][]) {
+    const binaryGamma = this.transpose(data).map(this.mostRepeated);
     this.gamma = this.arrayBitsToDec(binaryGamma);
     this.epsilon = this.arrayBitsToDec(this.invertBits(binaryGamma));
   }
@@ -59,5 +61,63 @@ class SubmarineDiagnostic {
 
   private invertBits(bits: number[]): number[] {
     return bits.map((bit) => bit ^ 1);
+  }
+}
+
+class LifeSupportRatingDiagnose {
+  execute(input: number[][]): number {
+    const oxygenGeneratorRating = this.calculateOxygenGeneratorRating(input);
+    const co2ScrubberRating = this.calculateCO2ScrubberRating(input);
+
+    return oxygenGeneratorRating * co2ScrubberRating;
+  }
+
+  private calculateOxygenGeneratorRating(input: number[][]): number {
+    return this.calculate(input, this.mostRepeatedOnColumn);
+  }
+
+  private calculateCO2ScrubberRating(input: number[][]): number {
+    return this.calculate(input, this.lessRepeatedOnColumn);
+  }
+
+  private calculate(
+    input: number[][],
+    bitFinderStrategy: (data: number[][], column: number) => number
+  ): number {
+    let data = this.shadowCopy(input);
+    let idx = 0;
+    while (data.length > 1) {
+      const commonBit = bitFinderStrategy(data, idx);
+      data = this.filterByColumn(data, commonBit, idx);
+      idx += 1;
+    }
+
+    return this.arrayBitsToDec(data[0]);
+  }
+
+  private shadowCopy(data: number[][]): number[][] {
+    return data.map((row) => [...row]);
+  }
+
+  private mostRepeatedOnColumn(data: number[][], column: number): number {
+    const total = data.reduce((acc, row) => acc + row[column], 0);
+    return total >= data.length / 2 ? 0 : 1;
+  }
+
+  private lessRepeatedOnColumn(data: number[][], column: number): number {
+    const total = data.reduce((acc, row) => acc + row[column], 0);
+    return total >= data.length / 2 ? 1 : 0;
+  }
+
+  private filterByColumn(
+    data: number[][],
+    commonBit: number,
+    column: number
+  ): number[][] {
+    return data.filter((row) => row[column] === commonBit);
+  }
+
+  private arrayBitsToDec(bits: number[]): number {
+    return parseInt(bits.toString().replaceAll(",", ""), 2);
   }
 }
