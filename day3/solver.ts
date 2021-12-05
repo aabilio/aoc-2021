@@ -13,19 +13,13 @@ export function part2(input: string[]): number {
 class SubmarineDiagnostic {
   private data: number[][];
 
-  gamma: number;
-  epsilon: number;
-
   constructor(input: string[]) {
-    this.gamma = 0;
-    this.epsilon = 0;
     this.data = this.linesToMatrix(input);
-
-    this.executePowerConsumptionDiagnose(this.data);
   }
 
   get powerConsumption(): number {
-    return this.gamma * this.epsilon;
+    const powerConsumptionDiagnose = new PowerConsumptionDiagnose();
+    return powerConsumptionDiagnose.execute(this.data);
   }
 
   get lifeSupportRating(): number {
@@ -33,17 +27,22 @@ class SubmarineDiagnostic {
     return lifeSupportRatingDiagnose.execute(this.data);
   }
 
-  private executePowerConsumptionDiagnose(data: number[][]) {
-    const binaryGamma = this.transpose(data).map(this.mostRepeated);
-    this.gamma = this.arrayBitsToDec(binaryGamma);
-    this.epsilon = this.arrayBitsToDec(this.invertBits(binaryGamma));
-  }
-
   private linesToMatrix(lines: string[]): number[][] {
     return lines.map((row) => row.split("").map(this.toNumber));
   }
+
   private toNumber(str: string): number {
     return +str;
+  }
+}
+
+class PowerConsumptionDiagnose {
+  execute(data: number[][]) {
+    const binaryGamma = this.transpose(data).map(this.mostRepeated);
+    const gamma = this.arrayBitsToDec(binaryGamma);
+    const epsilon = this.arrayBitsToDec(this.invertBits(binaryGamma));
+
+    return gamma * epsilon;
   }
 
   private transpose(matrix: number[][]): number[][] {
