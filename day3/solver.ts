@@ -39,8 +39,8 @@ class SubmarineDiagnostic {
 class PowerConsumptionDiagnose {
   execute(data: number[][]) {
     const binaryGamma = this.transpose(data).map(this.mostRepeated);
-    const gamma = this.arrayBitsToDec(binaryGamma);
-    const epsilon = this.arrayBitsToDec(this.invertBits(binaryGamma));
+    const gamma = BitsUtils.arrayToDecimal(binaryGamma);
+    const epsilon = BitsUtils.arrayToDecimal(this.invertBits(binaryGamma));
 
     return gamma * epsilon;
   }
@@ -52,10 +52,6 @@ class PowerConsumptionDiagnose {
   private mostRepeated(bits: number[]): number {
     const total = bits.reduce((acc, curr) => acc + curr, 0);
     return total > bits.length / 2 ? 1 : 0;
-  }
-
-  private arrayBitsToDec(bits: number[]): number {
-    return parseInt(bits.toString().replaceAll(",", ""), 2);
   }
 
   private invertBits(bits: number[]): number[] {
@@ -91,7 +87,7 @@ class LifeSupportRatingDiagnose {
       idx += 1;
     }
 
-    return this.arrayBitsToDec(data[0]);
+    return BitsUtils.arrayToDecimal(data[0]);
   }
 
   private shadowCopy(data: number[][]): number[][] {
@@ -115,8 +111,10 @@ class LifeSupportRatingDiagnose {
   ): number[][] {
     return data.filter((row) => row[column] === commonBit);
   }
+}
 
-  private arrayBitsToDec(bits: number[]): number {
+class BitsUtils {
+  static arrayToDecimal(bits: number[]): number {
     return parseInt(bits.toString().replaceAll(",", ""), 2);
   }
 }
