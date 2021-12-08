@@ -46,10 +46,6 @@ class CardNumber {
   check(): void {
     this.checked = true;
   }
-
-  render(): string {
-    return `${this.number}${this.checked ? "*" : ""}`;
-  }
 }
 
 class BingoBoard {
@@ -89,16 +85,6 @@ class BingoBoard {
     );
 
     return isCompleteOnRows || isCompleteOnColumns;
-  }
-
-  render(): string {
-    let view = "";
-    this.numbers.forEach((row) => {
-      row.forEach((cardNumber) => (view += `${cardNumber.render()} `));
-      view += "\n";
-    });
-
-    return view;
   }
 
   private transpose(matrix: CardNumber[][]): CardNumber[][] {
