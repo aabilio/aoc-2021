@@ -127,32 +127,22 @@ class Game {
 
     while (true) {
       const number = this.bingo.next();
-      if (number === undefined && allWinners.length === 0) {
-        return [
-          {
-            lastNumber: number,
-            winner: null,
-          },
-        ];
-      }
+      if (number === undefined) break;
 
       const toRemoveIdx: number[] = [];
       for (const [index, board] of this.boards.entries()) {
         board.notify(number);
         if (board.isComplete()) {
-          allWinners.push({
-            lastNumber: number,
-            winner: board,
-          });
+          allWinners.push({ lastNumber: number, winner: board });
           toRemoveIdx.push(index);
         }
       }
       this.boards = this.boards.filter((_, idx) => !toRemoveIdx.includes(idx));
-
-      if (number === undefined && allWinners.length > 0) {
-        return allWinners;
-      }
     }
+
+    return allWinners.length
+      ? allWinners
+      : [{ lastNumber: undefined, winner: null }];
   }
 }
 
