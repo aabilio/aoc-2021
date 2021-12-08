@@ -1,6 +1,15 @@
 export function part1(input: string): number {
   const game = Game.from(input);
-  const { lastNumber, winner } = game.play();
+  const allWinners = game.play();
+  const { lastNumber, winner } = allWinners[0];
+
+  return calculateScore(lastNumber, winner);
+}
+
+export function part2(input: string): number {
+  const game = Game.from(input);
+  const allWinners = game.play();
+  const { lastNumber, winner } = allWinners[allWinners.length - 1];
 
   return calculateScore(lastNumber, winner);
 }
@@ -113,30 +122,37 @@ class Game {
     return new Game(bingo, boards);
   }
 
-  play(): { lastNumber: number | undefined; winner: BingoBoard | null } {
+  play(): { lastNumber: number | undefined; winner: BingoBoard | null }[] {
+    const allWinners = [];
+
     while (true) {
       const number = this.bingo.next();
-      if (number === undefined) {
-        return {
-          lastNumber: number,
-          winner: null,
-        };
+      if (number === undefined && allWinners.length === 0) {
+        return [
+          {
+            lastNumber: number,
+            winner: null,
+          },
+        ];
       }
 
-      for (const board of this.boards) {
+      const toRemoveIdx: number[] = [];
+      for (const [index, board] of this.boards.entries()) {
         board.notify(number);
         if (board.isComplete()) {
-          return {
+          allWinners.push({
             lastNumber: number,
             winner: board,
-          };
+          });
+          toRemoveIdx.push(index);
         }
       }
-    }
-  }
+      this.boards = this.boards.filter((_, idx) => !toRemoveIdx.includes(idx));
 
-  get draw(): number {
-    return 4512;
+      if (number === undefined && allWinners.length > 0) {
+        return allWinners;
+      }
+    }
   }
 }
 
